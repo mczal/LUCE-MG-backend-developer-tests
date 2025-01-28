@@ -36,38 +36,62 @@ class YourPlayer < BasePlayer
 
     puts "Before Update Dynamic SEEN NODE: #{@seen_node}"
     puts "Before Update Dynamic NEXT POINT RESULT : #{next_point_result}"
-    binding.pry
+    # binding.pry
     update_dynamic
 
     puts "After Update Dynamic SEEN NODE: #{@seen_node}"
     puts "After Update Dynamic NEXT POINT RESULT : #{next_point_result}"
-    binding.pry
+    # binding.pry
     walk
   end
 
   def walk
+    # if @hopping == nil
     return @current_position = next_point_result[:key]
+    # end
   end
 
   def update_dynamic
+    if @hopping != nil
+      if @hopping[:additional_route].any?
+        next_route_add = @hopping[:additional_route].first
+        @hopping[:additional_route].delete(next_route_add)
+
+        @next_point_result = @seen_node.filter{|x|x[:key] == next_route_add}.first
+      else
+        @next_point_result = @hopping[:final_target]
+        @hopping = nil
+        @next_point_result
+      end
+    end
+
+
+
+    @seen_node.filter do |x|
+      x[:key] != @current_position && x[:key] != next_point_result[:key]
+    end.each do |entry|
+      if entry[:additional_route].include?(@current_position)
+        entry[:additional_route].delete(@current_position)
+        entry[:cost] = entry[:cost] - next_point_result[:cost]
+      else
+        entry[:additional_route].unshift(@current_position)
+        entry[:cost] = entry[:cost] + next_point_result[:cost]
+      end
+    end
+
     #update to curr position cost
     curr = @seen_node.filter{|x|x[:key] == @current_position}.first
     curr[:cost] = next_point_result[:cost]
-
 
     #update to next position cost = 0
     target = @seen_node.filter{|x|x[:key] == next_point_result[:key]}.first
     target[:cost] = 0
 
-    @seen_node.filter do |x|
-      x[:key] != @current_position && x[:key] != next_point_result[:key]
-    end.each do |entry|
-      entry[:additional_route].unshift(@current_position)
-      entry[:cost] = entry[:cost] + next_point_result[:cost]
-    end
   end
 
   def pick_shortest_path
+    return if @hopping != nil
+
     candidates = @seen_node.filter{|x|!x[:is_visited]}
     sorted_candidates = candidates.sort_by{|entry| entry[:cost]}
     next_coord = sorted_candidates.first
@@ -86,6 +110,8 @@ class YourPlayer < BasePlayer
   end
 
   def see_path
+    return if @hopping != nil
+
     # see right
     row_right = @current_position[:row]
     col_right = @current_position[:col] + 1

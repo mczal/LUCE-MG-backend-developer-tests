@@ -6,8 +6,8 @@ require 'pry'
 
 srand(129)
 
+# grid_size = 2
 grid_size = 3
-# grid_size = 5
 
 your_strategy = -> {
   game = Game.new(grid_size: grid_size)
