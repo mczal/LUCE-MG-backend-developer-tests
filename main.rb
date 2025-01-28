@@ -2,12 +2,11 @@ require './game.rb'
 require './random_player.rb'
 require './your_player.rb'
 require './helper.rb'
-require 'pry'
+# require 'pry'
 
 srand(129)
 
-# grid_size = 2
-grid_size = 3
+grid_size = 10
 
 your_strategy = -> {
   game = Game.new(grid_size: grid_size)
