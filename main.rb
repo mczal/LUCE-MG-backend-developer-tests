@@ -4,7 +4,7 @@ require './your_player.rb'
 require './helper.rb'
 
 require './brain.rb'
-require 'pry'
+# require 'pry'
 
 srand(129)
 
