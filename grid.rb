@@ -18,7 +18,7 @@ class Grid
   end
 
   def is_valid_move?(from:, to:)
-    edges[from][to] != nil
+    edges[from] != nil && edges[from][to] != nil
   end
 
   def move_cost(from:, to:)

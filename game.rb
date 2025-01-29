@@ -25,6 +25,8 @@ class Game
       puts "Epoch #{@timer}"
 
       players.each do |player|
+        break if finished?
+
         current_position = players_state[player][:position]
         new_position = player.next_point(time: timer)
 

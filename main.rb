@@ -2,18 +2,23 @@ require './game.rb'
 require './random_player.rb'
 require './your_player.rb'
 require './helper.rb'
-# require 'pry'
+
+require './brain.rb'
+require 'pry'
 
 srand(129)
 
 grid_size = 10
+number_of_player = 2
 
 your_strategy = -> {
   game = Game.new(grid_size: grid_size)
+  Brain.game = game
 
-  you = YourPlayer.new(game: game, name: 'Unknown candidate')
-
-  game.add_player(you)
+  number_of_player.times.each.with_index(1) do |_,i|
+    your_player = YourPlayer.new(game: game, name: "Candidate[#{i}]")
+    game.add_player(your_player)
+  end
 
   game.start
 }
@@ -34,3 +39,4 @@ random_results = random_strategy.call
 your_results = your_strategy.call
 
 compare_hashes(your_results, random_results)
+# print_one_hash(your_results)
